@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>{{ product.title }}</title>
+    <style>
+        .logo-image {
+            max-width: 200px; /* Set a max width for the logo */
+            height: auto; /* Maintain aspect ratio */
+        }
+        .description {
+            white-space: pre-line; /* Preserve line breaks in description */
+        }
+        .card {
+            margin-bottom: 20px; /* Space between cards */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        {% if product %}
+            <h1>{{ product.title }}</h1>
+            <img src="{{ product.images[0] }}" alt="{{ product.title }} logo" class="img-fluid logo-image mb-3">
+
+            <div class="card">
+                <div class="card-body">
+                    <h5>Details</h5>
+                    <p><strong>Author:</strong> {{ product.author }}</p>
+                    <p><strong>Price:</strong> {{ product.price }}</p>
+                    <p><strong>Category:</strong> {{ product.category }}</p>
+                    <p><strong>Subcategory:</strong> {{ product['sub-category'] }}</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5>Description</h5>
+                    <p class="description">{{ product.description }}</p>
+                </div>
+            </div>
+
+            <h3>Images</h3>
+            <div class="row mb-3">
+                {% for image in product.images %}
+                    <div class="col-md-3 mb-3">
+                        <img src="{{ image }}" alt="Image for {{ product.title }}" class="img-fluid">
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5>Additional Information</h5>
+                    <p><strong>Last Update:</strong> {{ product.last_update }}</p>
+                    <p><strong>Published:</strong> {{ product.published }}</p>
+                    <p><strong>Gutenberg Optimized:</strong> {{ product.gutenberg_optimized }}</p>
+                    <p><strong>High Resolution:</strong> {{ product.high_resolution }}</p>
+                    <p><strong>Widget Ready:</strong> {{ product.widget_ready }}</p>
+                </div>
+            </div>
+
+            <h3>Compatible Browsers</h3>
+            <ul class="list-group mb-3">
+                {% for browser in product.compatible_browsers %}
+                    <li class="list-group-item">{{ browser }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Compatible With</h3>
+            <ul class="list-group mb-3">
+                {% for compatible in product.compatible_with %}
+                    <li class="list-group-item">{{ compatible }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Software Versions</h3>
+            <ul class="list-group mb-3">
+                {% for version in product.software_version %}
+                    <li class="list-group-item">{{ version }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Files Included</h3>
+            <ul class="list-group mb-3">
+                {% for file in product.themeforest_files_included %}
+                    <li class="list-group-item">{{ file }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Tags</h3>
+            <p>{{ product.tags | join(', ') }}</p>
+
+            <h3>Columns</h3>
+            <p>{{ product.columns }}</p>
+
+            <h3>Documentation</h3>
+            <p>{{ product.documentation }}</p>
+
+            <h3>Layout</h3>
+            <p>{{ product.layout }}</p>
+        {% else %}
+            <p>Product not found.</p>
+        {% endif %}
+        <a href="/" class="btn btn-secondary">Back to Products</a>
+    </div>
+</body>
+</html>
