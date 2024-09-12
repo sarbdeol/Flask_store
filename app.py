@@ -3,6 +3,9 @@ import requests
 app = Flask(__name__)
 
 @app.route('/')
+def main():
+    return render_template('main.html')
+@app.route('/products')
 def index():
     # Fetch product data from the API
     try:
@@ -30,4 +33,4 @@ def product_page(product_id):
 
     return render_template('product.html', product=product)
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=8000, debug=True)

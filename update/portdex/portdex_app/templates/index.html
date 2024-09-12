@@ -159,7 +159,7 @@
 
         .small-image {
             width: 100%; /* Set the desired width for the image */
-            height: auto; /* Maintain aspect ratio */
+            height: 300px; /* Maintain aspect ratio */
         }
     </style>
     <title>Theme Store</title>
@@ -175,39 +175,85 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/products">Products</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
                 </ul>
-                <ul>
+                <!-- <ul>
                     {% for category in categories %}
                         <li class="list-group-item category-item" onclick=""><i class="fas fa-code"></i> {{ category }}</li>
                     {% endfor %}
-                </ul>
+                </ul> -->
             </div>
         </div>
     </nav>
 
     <!-- Sidebar -->
-    <div class="sidebar">
+    <!-- Sidebar for larger devices (hidden on mobile) -->
+    <div class="sidebar d-none d-md-block">
         <div class="card mb-4" style="background-color: #FFFFFF; border: none;">
             <div class="card-body">
-                <h5 class="card-title">Access Features</h5>
-                <p class="card-text">Log in or sign up to access all features of our service.</p>
-                <div class="d-grid gap-2">
-                    <button type="button" class="btn btn-primary" data-test-name="_hamburgerCreateProfile">Sign up</button>
-                    <button type="button" class="btn btn-secondary" data-test-name="_hamburgerLogin">Log in</button>
-                </div>
+                {% if user.is_authenticated %}
+                    <h5 class="card-title">Welcome, {{ user.username }}</h5>
+                    <p class="card-text">You have access to all features of our service.</p>
+                    <a href="{% url 'logout' %}" class="btn btn-secondary">Log out</a>
+                {% else %}
+                    <h5 class="card-title">Access Features</h5>
+                    <p class="card-text">Log in or sign up to access all features of our service.</p>
+                    <div class="d-grid gap-2">
+                        <!-- Sign Up button -->
+                        <a href="{% url 'register' %}" class="btn btn-primary">Sign up</a>
+                        <!-- Log In button -->
+                        <a href="{% url 'login' %}" class="btn btn-secondary">Log in</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
-    
+
         <h3>Categories</h3>
-        <ul>
+        <ul class="list-group">
             {% for category in categories %}
-                <li class="list-group-item category-item" onclick=""><i class="fas fa-code"></i> {{ category }}</li>
+                <li class="list-group-item category-item"><i class="fas fa-code"></i> {{ category }}</li>
             {% endfor %}
         </ul>
     </div>
+
+    <!-- Display login/signup and categories after navbar on mobile devices -->
+    <div class="d-block d-md-none">
+        <!-- Login/Sign Up section for mobile -->
+        <div class="card mb-4" style="background-color: #FFFFFF; border: none;">
+            <div class="card-body">
+                {% if user.is_authenticated %}
+                    <h5 class="card-title">Welcome, {{ user.username }}</h5>
+                    <p class="card-text">You have access to all features of our service.</p>
+                    <a href="{% url 'logout' %}" class="btn btn-secondary w-100">Log out</a>
+                {% else %}
+                    <h5 class="card-title">Access Features</h5>
+                    <p class="card-text">Log in or sign up to access all features of our service.</p>
+                    <div class="d-grid gap-2">
+                        <!-- Sign Up button -->
+                        <a href="{% url 'register' %}" class="btn btn-primary w-100">Sign up</a>
+                        <!-- Log In button -->
+                        <a href="{% url 'login' %}" class="btn btn-secondary w-100">Log in</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Categories section for mobile, displayed horizontally -->
+        <div class="container">
+            <h3>Categories</h3>
+            <div class="d-flex flex-wrap">
+                {% for category in categories %}
+                    <div class="p-2">
+                        <button class="btn btn-outline-primary">{{ category }}</button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
 
     <div class="main-content">
         <div class="section">
@@ -217,15 +263,19 @@
                     <div class="col-md-4 product-card" data-category="{{ product.category }}">
                         <div class="card">
                             <div class="card">
-                                <img src="{{ product.images[0] }}" alt="{{ product.title }} logo" class="card-img-top logo-image small-image">
+                                {% for image in product.images %}
+                                    {% if forloop.first %}
+                                        <img src="{{ image }}" alt="{{ product.title }} logo" class="card-img-top logo-image small-image">
+                                    {% endif %}
+                                {% endfor %}
                                 <div class="card-body">
                                     <h5 class="card-title">{{ product.title }}</h5>
                                     <p><strong>Author:</strong> {{ product.author }}</p>
                                     <p><strong>Price:</strong> {{ product.price }}</p>
                                     <p><strong>Category:</strong> {{ product.category }}</p>
-                                    <p><strong>Subcategory:</strong> {{ product['sub-category'] }}</p>
-                                    <p><strong>Tags:</strong> {{ product.tags | join(', ') }}</p>
-                                    <a href="{{ url_for('product_page', product_id=product.title) }}" class="btn btn-primary">View Product</a>
+                                    <p><strong>Subcategory:</strong> {{ product.sub_category }}</p>
+                                    <p><strong>Tags:</strong> {{ product.tags|join:", " }}</p>
+                                    <a href="{% url 'product_page' product.slug %}" class="btn btn-primary">View Product</a>
                                 </div>
                             </div>
                         </div>
